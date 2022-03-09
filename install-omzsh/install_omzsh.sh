@@ -2,6 +2,17 @@
 
 pd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# Check zsh installed status
+function check_zsh {
+   pkg=zsh
+   status="$(dpkg-query -W --showformat='${db:Status-Status}' "$pkg" 2>&1)"
+   if [ ! $? = 0 ] || [ ! "$status" = installed ]; then
+      sudo apt install $pkg
+   else
+      echo "zsh package is already installed"
+   fi
+}
+
 # Install omzsh && plugins && themes
 function install_omzsh () {
    local list=($@)
@@ -59,6 +70,7 @@ function switch_on {
 # Main function
 function main () {
    source $pd/config
+   check_zsh
    install_omzsh ${omzsh[@]}
    install_omzsh ${plugins[@]}
    install_omzsh ${custom_plugins[@]}
