@@ -1,0 +1,49 @@
+#!/bin/bash
+
+tag="LA.UM.9.12.r1-14000-SMxx50.0"
+qca_config="qca6390"
+
+qcacld_repo=(
+	"qcacld-3.0"
+	"https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/wlan/qcacld-3.0"
+	"qca-wifi-host-cmn"
+	"https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/wlan/qca-wifi-host-cmn"
+	"fw-api"
+	"https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/wlan/fw-api"
+)
+
+kernel_tree=(
+	'$isource "drivers/staging/qcacld-3.0/Kconfig"'
+	"drivers/staging/Kconfig"
+	'$aobj-$(CONFIG_QCA_CLD_WLAN)	+= qcacld-3.0/'
+	"drivers/staging/Makefile"
+	"s/WLAN_PROFILE ?= default/WLAN_PROFILE ?= $qca_config/g"
+	"drivers/staging/qcacld-3.0/Kbuild"
+	's/include $(WLAN_ROOT)\/configs\/$(CONFIG_QCA_CLD_WLAN_PROFILE)_defconfig/include $(WLAN_ROOT)\/configs\/$(patsubst "%",%,$(CONFIG_QCA_CLD_WLAN_PROFILE))_defconfig/g'
+	"drivers/staging/qcacld-3.0/Kbuild"
+)
+
+qcacld_kconfig=(
+	'drivers/staging/qcacld-3.0/Kconfig'
+	'comment "Qualcomm Atheros CLD WLAN module"
+
+config QCA_CLD_WLAN
+	tristate "Qualcomm Atheros CLD WLAN module"
+	default n
+	help
+	  Add support for the Qualcomm Atheros CLD WLAN module
+
+if QCA_CLD_WLAN != n
+
+config QCA_CLD_WLAN_PROFILE
+	string "Configuration profile for Qualcomm Atheros CLD WLAN module"
+	default "default"
+	help
+	  Specify which configuration profile to be used for building
+	  this module.
+	  
+	  Profiles are located at drivers/staging/qcacld-3.0/configs.
+endif # QCA_CLD_WLAN'
+	 'default "default"'
+	 "default \"$qca_config\""
+)
