@@ -41,6 +41,7 @@ function install_fonts () {
       do
          wget -q --show-progress -N ${list[$url]} -P $dir
       done
+   sudo apt install fonts-powerline
    fc-cache -fv
 }
 
@@ -64,7 +65,7 @@ function switch_on {
    cp "$target_dir/.oh-my-zsh/templates/zshrc.zsh-template" "$target_dir/.zshrc"
    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' "$target_dir/.zshrc"
    sed -i "s/plugins=(git)/plugins=(git $active_plugins)/g" "$target_dir/.zshrc"
-   chsh -s /bin/zsh
+   sudo chsh -s /bin/zsh
 }
 
 # Main function
