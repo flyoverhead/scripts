@@ -2,6 +2,7 @@
 
 tag="LA.UM.9.12.r1-14000-SMxx50.0"
 qca_config="qca6390"
+current_branch=$(git branch --show-current)
 
 qcacld_repo=(
 	"qcacld-3.0"

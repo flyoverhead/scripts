@@ -25,39 +25,4 @@ function configure_tree {
 	sed -i "s/${qcacld_kconfig[2]}/${qcacld_kconfig[3]}/g" "${qcacld_kconfig[0]}"
 }
 
-function add_repo () {
-	git remote add $1 $2
-	git subtree add --prefix drivers/staging/$1 $1 $tag
-	echo "$1 remote repo successfully added"
-}
-
-function fetch_repo () {
-	current_branch=$(git branch --show-current)
-	git fetch $1 $tag
-	git merge --no-commit --allow-unrelated-histories FETCH_HEAD
-	git commit -m "Merge tag $tag to $current_branch"
-}
-
-function check_repo () {
-	if git remote show | grep $1 > /dev/null 2>/dev/null; then
-		echo "Fetching updates for $1..."
-		fetch_repo $1
-	else
-		add_repo $1 $2
-		fetch_repo $1
-	fi
-}
-
-function main {	
-	sum=${#qcacld_repo[@]}
-	for (( n=0; n<$sum; n++ ))
-	do
-		name=$n
-		url=$name+1
-		check_repo ${qcacld_repo[$name]} ${qcacld_repo[$url]}
-		n=$name+1
-	done
-}
-
-main
 configure_tree > /dev/null 2>/dev/null
