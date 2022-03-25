@@ -6,15 +6,15 @@ source $pd/config
 function add_repo () {
 	git remote add $1 $2
 	git fetch $1 $tag
-	git merge --no-commit FETCH_HEAD --allow-unrelated-histories
 	git read-tree --prefix=drivers/staging/$1 -u FETCH_HEAD
+	git merge -X subtree=drivers/staging/$1 --no-commit FETCH_HEAD --allow-unrelated-histories
 	git commit -m "Merge $1 tag $tag into $current_branch"
 	echo "$1 remote repo has been added successfully"
 }
 
 function fetch_repo () {
 	git fetch $1 $tag
-	git merge -X subtree=drivers/staging/$1 --no-commit FETCH_HEAD
+	git merge -X subtree=drivers/staging/$1 --no-commit FETCH_HEAD --allow-unrelated-histories
 	git commit -m "Merge $1 tag $tag into $current_branch"
 	echo "Tag $tag has been merged successfully"
 }
